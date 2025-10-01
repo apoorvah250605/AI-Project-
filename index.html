@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compass Pro: Enhanced Wellness Companion</title>
+    <style>
+        /* --- General & Calming Background --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /* Calming Background: Soft Blue/Green Gradient */
+            background: linear-gradient(135deg, #e0f2f7 0%, #c4e9f0 100%); 
+            color: #333;
+        }
+
+        .chatbot-container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 500px;
+            height: 80vh; /* Increased height */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #00838f; /* Darker Teal for Header */
+            color: white;
+            padding: 18px;
+            text-align: center;
+            font-size: 1.4em;
+            font-weight: 600;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .chat-box {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            border-bottom: 1px solid #e0e0e0;
+            scroll-behavior: smooth;
+            background-color: #f7feff; /* Very light background for chat */
+        }
+
+        /* --- Message Styling --- */
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+        }
+
+        .user-message {
+            justify-content: flex-end;
+        }
+
+        .bot-message {
+            justify-content: flex-start;
+        }
+
+        .message-content {
+            padding: 14px 20px;
+            border-radius: 25px;
+            max-width: 85%;
+            line-height: 1.6;
+            word-wrap: break-word;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .user-message .message-content {
+            background-color: #00bcd4; /* Teal */
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .bot-message .message-content {
+            background-color: #e3f2fd; /* Light Pale Blue */
+            color: #263238;
+            border: 1px solid #bbdefb;
+            border-bottom-left-radius: 5px;
+            position: relative;
+        }
+        
+        /* New: Sentiment Indicator (Emoji) */
+        .sentiment-indicator {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            font-size: 1.2em;
+            background: white;
+            padding: 2px 5px;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- Input Area --- */
+        .input-area {
+            display: flex;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #eee;
+        }
+
+        #user-input {
+            flex-grow: 1;
+            padding: 12px 18px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            font-size: 1em;
+            margin-right: 10px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        #user-input:focus {
+            border-color: #00bcd4;
+        }
+
+        #send-btn {
+            background-color: #4CAF50; 
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            font-weight: bold;
+        }
+
+        #send-btn:hover {
+            background-color: #45a049;
+        }
+        
+        #send-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="chatbot-container">
+        <div class="header">
+            ✨ Compass Pro: Mental Wellness Companion
+        </div>
+        
+        <div class="chat-box" id="chat-box">
+            <div class="message bot-message">
+                <div class="message-content">
+                    <span class="sentiment-indicator">👋</span>
+                    Welcome! I'm here to listen and support your well-being. How can I help you feel better today?
+                </div>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Share your thoughts or ask for a tip...">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatBox = document.getElementById('chat-box');
+            const userInput = document.getElementById('user-input');
+            const sendBtn = document.getElementById('send-btn');
+
+            // --- Enhanced Feature Data ---
+            const RESPONSES = {
+                'negative': {
+                    emojis: '😔',
+                    replies: [
+                        "It sounds like you're carrying a heavy load, and I want you to know that's completely valid. Your feelings matter. Let's start with a moment of gentle breathing.",
+                        "I hear the struggle in your words. Please be kind to yourself right now. What is the very *smallest* act of self-care you can manage in the next 5 minutes?",
+                        "Thank you for sharing that vulnerability. Remember, you have survived every challenge so far. Let's focus on one small, achievable goal for the next hour.",
+                    ],
+                },
+                'positive': {
+                    emojis: '😊',
+                    replies: [
+                        "That is genuinely wonderful news! I'm happy for you. What brought this positive feeling on today? Keep shining!",
+                        "Fantastic! Celebrating moments of joy is key to well-being. How can you carry this good feeling into the rest of your day?",
+                    ],
+                },
+                'neutral': {
+                    emojis: '🤔',
+                    replies: [
+                        "I appreciate you reaching out. Sometimes we just need to talk things through. Tell me more about what's been occupying your mind lately.",
+                        "That's a thoughtful question/statement. If you're looking for an idea, we could try a guided mini-meditation or a quick motivational quote.",
+                    ],
+                },
+                'crisis': {
+                    emojis: '🚨',
+                    replies: [
+                        "**Immediate Safety is Paramount.** I am an AI and cannot replace a human crisis professional. Please reach out to a professional human resource *right now*.",
+                    ],
+                    // A special flag to emphasize the immediate need for resources
+                    isCrisis: true 
+                }
+            };
+
+            const RELAXATION_TIPS = [
+                "**4-7-8 Breathing:** Inhale quietly through your nose for a count of 4, hold your breath for 7, and exhale completely through your mouth for a count of 8. Repeat 4 times.",
+                "**5-4-3-2-1 Grounding:** Name 5 things you can see, 4 things you can touch, 3 things you can hear, 2 things you can smell, and 1 thing you can taste. This anchors you to the present moment.",
+                "**Mindful Movement:** Stand up and gently stretch your arms over your head, focusing only on the sensation in your body as you move. Hold for 15 seconds.",
+                "**Water Break:** Slowly drink a glass of water, paying attention to the temperature and the feeling as you swallow. Hydration is key to clarity.",
+            ];
+            
+            const RESOURCES = {
+                'professional': "**Crisis Hotline:** Text HOME to 741741 (Crisis Text Line) or call 988 (Suicide & Crisis Lifeline) in the US/Canada. Please seek help immediately if you are in danger.",
+                'counseling': "**University Counseling:** Look up your school's student health services website for free, confidential sessions.",
+                'apps': "**Recommended Apps:** Calm, Headspace, or Insight Timer offer excellent guided meditations and sleep stories.",
+            }
+
+            // --- Logic Functions ---
+
+            function detectMood(text) {
+                const lowerText = text.toLowerCase();
+                const negative = ['stress', 'anxiety', 'lonely', 'sad', 'overwhelmed', 'tired', 'down', 'worried', 'struggling', 'bad'];
+                const positive = ['happy', 'great', 'good', 'fine', 'excited', 'well', 'amazing'];
+                const crisis = ['kill myself', 'end my life', 'suicide', 'self-harm']; // High-alert words
+
+                if (crisis.some(keyword => lowerText.includes(keyword))) {
+                    return 'crisis';
+                } else if (negative.some(keyword => lowerText.includes(keyword))) {
+                    return 'negative';
+                } else if (positive.some(keyword => lowerText.includes(keyword))) {
+                    return 'positive';
+                } else {
+                    return 'neutral';
+                }
+            }
+
+            function generateBotResponse(mood, userText) {
+                const moodData = RESPONSES[mood];
+                let response = moodData.replies[Math.floor(Math.random() * moodData.replies.length)];
+
+                // Check for feature commands
+                if (userText.toLowerCase().includes('tip') || userText.toLowerCase().includes('breathe')) {
+                    response = "Of course, here is a helpful tip: " + RELAXATION_TIPS[Math.floor(Math.random() * RELAXATION_TIPS.length)];
+                } else if (userText.toLowerCase().includes('resource')) {
+                    response = RESOURCES.counseling + " For immediate help: " + RESOURCES.professional;
+                } else if (userText.toLowerCase().includes('app')) {
+                    response = RESOURCES.apps;
+                }
+
+                return {
+                    text: response,
+                    emoji: moodData.emojis,
+                    isCrisis: moodData.isCrisis || false
+                };
+            }
+
+            function addMessage(text, sender, emoji = null) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}-message`;
+                
+                let contentHTML = text;
+                if (emoji && sender === 'bot') {
+                    // Add sentiment indicator emoji
+                    contentHTML = `<span class="sentiment-indicator">${emoji}</span>` + text;
+                }
+                
+                // Add emphasis for crisis messages
+                if (sender === 'bot' && text.includes('Immediate Safety is Paramount')) {
+                    messageDiv.querySelector('.message-content').style.backgroundColor = '#ffebee'; // Light red
+                    messageDiv.querySelector('.message-content').style.border = '2px solid #ef5350';
+                }
+
+                messageDiv.innerHTML = `<div class="message-content">${contentHTML}</div>`;
+                chatBox.appendChild(messageDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+
+            function processUserMessage() {
+                const text = userInput.value.trim();
+                if (text === '') return;
+
+                // 1. Display User Message
+                addMessage(text, 'user');
+
+                // 2. Clear input field
+                userInput.value = '';
+                
+                // 3. Analyze and Generate Response
+                const mood = detectMood(text);
+                const botResponse = generateBotResponse(mood, text);
+                
+                // 4. Display Bot Response after a small delay
+                setTimeout(() => {
+                    addMessage(botResponse.text, 'bot', botResponse.emoji);
+                    
+                    // If negative or neutral, offer a prompt to guide the conversation
+                    if (mood === 'negative' || mood === 'neutral') {
+                        setTimeout(() => {
+                            addMessage("You can ask for a **'tip'**, **'resource'**, or just continue sharing.", 'bot', '💡');
+                        }, 1500);
+                    }
+                }, 700);
+            }
+
+            // Event Listeners
+            sendBtn.addEventListener('click', processUserMessage);
+            userInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    processUserMessage();
+                }
+            });
+
+        });
+    </script>
+
+</body>
+</html>

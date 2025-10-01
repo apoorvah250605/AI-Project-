@@ -1,0 +1,77 @@
+/* --- General & Calming Background --- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    /* Calming Background: Soft Blue/Green Gradient */
+    background: linear-gradient(135deg, #e0f2f7 0%, #c4e9f0 100%); 
+    color: #333;
+}
+
+.chatbot-container {
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    width: 90%;
+    max-width: 500px;
+    height: 80vh; /* Increased height */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.header {
+    background-color: #00838f; /* Darker Teal for Header */
+    color: white;
+    padding: 18px;
+    text-align: center;
+    font-size: 1.4em;
+    font-weight: 600;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.chat-box {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    border-bottom: 1px solid #e0e0e0;
+    scroll-behavior: smooth;
+    background-color: #f7feff; /* Very light background for chat */
+}
+
+/* --- Message Styling --- */
+.message {
+    margin-bottom: 20px;
+    display: flex;
+}
+
+.user-message {
+    justify-content: flex-end;
+}
+
+.bot-message {
+    justify-content: flex-start;
+}
+
+.message-content {
+    padding: 14px 20px;
+    border-radius: 25px;
+    max-width: 85%;
+    line-height: 1.6;
+    word-wrap: break-word;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.user-message .message-content {
+    background-color: #00bcd4; /* Teal */
+    color: white;
+    border-bottom-right-radius: 5px;
+}
+
+.bot-message .message-content {
+    background-color: #e3f2fd; /* Light Pale Blue */
+    color: #263238
